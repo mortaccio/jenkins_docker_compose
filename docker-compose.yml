@@ -7,7 +7,7 @@ services:
     restart: unless-stopped
     ports:
       - "8080:8080"
-      - "50000:50000"  # for JNLP
+      - "50000:50000"  # for JNLP agent communication
     volumes:
       - jenkins_home:/var/jenkins_home
     networks:
@@ -19,8 +19,11 @@ services:
       dockerfile: Dockerfile
     container_name: jenkins-agent
     restart: unless-stopped
+    environment:
+      - KUBECONFIG=/root/.kube/config
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
+      - /var/run/docker.sock:/var/run/docker.sock        # for docker builds
+      - ~/.kube:/root/.kube                              # for kubectl access
     depends_on:
       - jenkins-master
     networks:
