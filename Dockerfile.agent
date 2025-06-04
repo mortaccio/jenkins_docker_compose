@@ -1,0 +1,21 @@
+FROM ubuntu:20.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update && \
+    apt-get install -y openssh-server openjdk-11-jdk curl && \
+    mkdir /var/run/sshd
+
+# Create jenkins user
+RUN useradd -m -d /home/jenkins -s /bin/bash jenkins && \
+    echo "jenkins:jenkins" | chpasswd && \
+    mkdir -p /home/jenkins/.ssh && \
+    chown -R jenkins:jenkins /home/jenkins/.ssh
+
+# Allow password & key-based login (password is temporary)
+RUN sed -i 's/#PasswordAuthentication yes/PasswordAuthentication yes/' /etc/ssh/sshd_config && \
+    sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin no/' /etc/ssh/sshd_config
+
+EXPOSE 22
+
+CMD ["/usr/sbin/sshd", "-D"]
