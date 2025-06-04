@@ -1,0 +1,13 @@
+FROM jenkins/jenkins:lts
+
+USER root
+
+# Install Grype
+RUN curl -sSfL https://raw.githubusercontent.com/anchore/grype/main/install.sh | sh -s -- -b /usr/local/bin
+
+# Optional: verify installation
+RUN grype version
+
+USER jenkins
+
+
