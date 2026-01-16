@@ -42,4 +42,8 @@ jobs:
         run: docker compose up -d
 
       - name: Grype scan
-        run : grype $(docker image ls -q)
+        run : | 
+                docker image ls -q | while read -r img; do
+                grype "$img"
+                done
+
