@@ -39,7 +39,9 @@ jobs:
         run: curl -sSfL https://get.anchore.io/grype | sudo sh -s -- -b /usr/local/bin
         
       - name: Docker build
-        run: docker build .
-        
-      - name: Docker compose up
-        run: docker compose up -d
+        run: |
+          docker build Dockerfile.master
+          docker build Dockerfile.agent
+
+      - name: Grype scan
+        run : grype $(docker image ls -q)
